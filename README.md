@@ -1,5 +1,5 @@
 # AI-LOA
-#### 集结棋(Lines of Action)，简称 LOA，是 Claude Soucie 在 1969 年推出的棋类。
+#### 集结棋(Lines of Action)，简称LOA，是Claude Soucie在1969年推出的棋类。
 #### 为奥林匹亚电脑游戏程式竞赛的指定棋类之一。棋盘可使用国际象棋棋盘。
 #### 棋子各方有十二颗，以两色各代表一方。
 ----
