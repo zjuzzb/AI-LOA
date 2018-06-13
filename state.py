@@ -9,8 +9,8 @@ class State:
 
     def get_moves(self):
 
-# get location of current player's chess, used as a start location of a move.
-    def get_prev_loc(self):
+# get locations of current player's chess, used as a start location of a move.
+    def get_start_loc(self):
         result = []
         for i in range(8):
             for j in range(8):
@@ -18,45 +18,43 @@ class State:
                     result.append((i,j))
         return result
 
-# get location of a chess's potential moves, used as a end location of a move.
-    def get_next_loc(self, x, y):
+# get LEGAL locations of a chess's potential moves, used as a end location of a move.
+    def get_end_loc(self, x, y):
         result = []
-        # move to right --direction = 1
-        # move to top-right --direction = 2
-        # move to top --direction = 3
-        # move to top-left --direction = 4
-        # move to left --direction = 5
-        # move to down-left --direction = 6
-        # move to down --direction = 7
-        # move to down-right --direction = 8
+        next_loc = [
+            (1,0),   # right
+            (1,1),   # up-right
+            (0,1),   # up
+            (-1,1),  # up-left
+            (-1,0),  # left
+            (-1,-1), # down-left
+            (0,-1),  # down
+            (1,-1),  # down-right
+        ]
+        for (dx, dy) in next_loc:
+            step = 0
+            (cx, cy) = (x, y)
+            while self.in_bound(cx, cy):
+                if self.board[cx][cy] != 0:
+                    step += 1
+                cx += dx; cy += dy
+            (next_x, next_y) = (x + step * dx, y + step * dy)
+            if self.in_bound(next_x, next_y) and self.is_legal_loc(next_x, next_y):
+                result.append((next_x, next_y))
 
-# according to the input direction to calculate the chess number, which used as step length.
-    def count_chess_number(self, x, y, direction):
-        count = 0; cx = x; cy = y
-
-        next_loc = {
-            'right': (1,0),
-            'top-right': (1,1),
-            'top': (0,1),
-            'top-left': (-1,1),
-            'left': (-1,0),
-            'down-left': (-1,-1),
-            'down': (0,-1),
-            'down-right': (1,-1),
-        }
-        while not self.out_of_bound(self, cx, cy):
-            if self.board[cx][cy] != 0:
-                count += 1
-            (dx,dy) = next_loc[direction]
-            cx += dx; cy += dy
-        return count
+        return result
 
     @staticmethod
-    def out_of_bound(self, x, y):
+    def in_bound(x, y):
         if x > 7 | x < 0 | y > 7 | y < 0:
-            return True
-        else:
             return False
+        else:
+            return True
 
+    def is_legal_loc(self, x ,y):
+        if self.board[x][y] == self.player:
+            return False
+        else:
+            return True
 
 
