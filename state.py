@@ -1,6 +1,6 @@
 class State:
     def __init__(self):
-        self.player = 1
+        self.round = 1
         self.board = []
         self.board.append([0, -1, -1, -1, -1, -1, -1, 0])
         for i in range(6):
@@ -8,13 +8,14 @@ class State:
         self.board.append([0, -1, -1, -1, -1, -1, -1, 0])
 
     def get_moves(self):
+        return
 
 # get locations of current player's chess, used as a start location of a move.
     def get_start_loc(self):
         result = []
         for i in range(8):
             for j in range(8):
-                if self.board[i][j] == self.player:
+                if self.board[i][j] == self.round:
                     result.append((i,j))
         return result
 
@@ -32,12 +33,17 @@ class State:
             (1,-1),  # down-right
         ]
         for (dx, dy) in next_loc:
-            step = 0
+            step = -1
             (cx, cy) = (x, y)
             while self.in_bound(cx, cy):
                 if self.board[cx][cy] != 0:
                     step += 1
                 cx += dx; cy += dy
+            (cx, cy) = (x, y)
+            while self.in_bound(cx, cy):
+                if self.board[cx][cy] != 0:
+                    step += 1
+                cx -= dx; cy -= dy
             (next_x, next_y) = (x + step * dx, y + step * dy)
             if self.in_bound(next_x, next_y) and self.is_legal_loc(next_x, next_y):
                 result.append((next_x, next_y))
@@ -46,13 +52,13 @@ class State:
 
     @staticmethod
     def in_bound(x, y):
-        if x > 7 | x < 0 | y > 7 | y < 0:
+        if x > 7 or x < 0 or y > 7 or y < 0:
             return False
         else:
             return True
 
     def is_legal_loc(self, x ,y):
-        if self.board[x][y] == self.player:
+        if self.board[x][y] == self.round:
             return False
         else:
             return True
