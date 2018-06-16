@@ -3,9 +3,9 @@ from math import *
 
 class Node:
     def __init__(self, state=None, move=None, parent=None):
-        self.player = state.player
-        self.untriedMoves = state.getmoves()
-        self.move = move
+        self.round = state.round
+        self.untriedMoves = state.get_moves()
+        self.move = move  # the move that got us to this node - "None" for the root node
         self.parent = parent
         self.child = []
         self.wins = 0
@@ -15,10 +15,11 @@ class Node:
         new_node = Node(state=s, move=m, parent=self)
         self.untriedMoves.remove(m)
         self.child.append(new_node)
+        return new_node
 
     def select_child(self):
         self.child.sort(key=lambda c: c.wins/c.visits + sqrt(2*log(self.visits)/c.visits))
-        return self.child[0]
+        return self.child[-1]
 
     def update(self, result):
         self.visits += 1
