@@ -21,16 +21,18 @@ def mcts(root_state, iter_max):
             node = node.add_child(move, state)  # add child and descend tree and remove the move
 
         # Roll out to the game end
-        while state.win_check() == 0 and state.legal_move_check() != 0:
-            state.do_move(random.choice(state.get_moves()))
+        move_count = 0
+        while state.win_check() == 0 and move_count <= 200:
+            state.do_move(state.quick_move())
+            move_count += 1
 
         # Back propagate from the expanded node and work back to the root node
-        game_res = state.get_result() # black -1 white 1 draw 0
+        game_res = state.win_check() # black -1 white 1 draw 0
         while node:
-            node.update((game_res * node.round + 1) / 2)
+            node.update((game_res * -node.round + 1) / 2)
             node = node.parent
 
-    selected_node = sorted(root_node.child, key=lambda c: c.visits)[-1]
+    selected_node = sorted(root_node.child, key=lambda c: c.wins/c.visits)[-1]
     print(selected_node.wins)
     print(selected_node.visits)
     print(selected_node.wins / selected_node.visits)

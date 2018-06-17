@@ -8,7 +8,6 @@ from state import State
 class LOAModel(State):
     def __init__(self):
         super(LOAModel, self).__init__()
-        self.round = -1
         # timing
         self.time_white = 0
         self.time_black = 0
@@ -60,9 +59,7 @@ class Application(Frame):
                     icon = self.black_selected_icon
                 else:
                     icon = self.white_selected_icon
-                self.chessButton[x][y] = Button(self, height=80, width=80, bg='#EBCEAC', image=icon,
-                                                command=(lambda x, y: lambda: self.on_click(x, y))(x, y))
-                self.chessButton[x][y].grid(row=x + 1, column=y)
+                self.chessButton[x][y].config(image=icon)
                 self.model.stage = 1
                 self.model.chess_selected = (x, y)
                 self.model.legal_move = self.model.get_end_loc(x, y)
@@ -75,12 +72,8 @@ class Application(Frame):
             if (x, y) in self.model.legal_move:
                 # move the chess to a new location
                 (prevx, prevy) = self.model.chess_selected
-                self.chessButton[prevx][prevy] = Button(self, height=80, width=80, bg='#EBCEAC', image=self.empty_icon,
-                                                        command=(lambda x, y: lambda: self.on_click(x, y))(prevx, prevy))
-                self.chessButton[prevx][prevy].grid(row=prevx + 1, column=prevy)
-                self.chessButton[x][y] = Button(self, height=80, width=80, bg='#EBCEAC', image=icon,
-                                                        command=(lambda x, y: lambda: self.on_click(x, y))(x, y))
-                self.chessButton[x][y].grid(row=x + 1, column=y)
+                self.chessButton[prevx][prevy].config(image=self.empty_icon)
+                self.chessButton[x][y].config(image=icon)
                 self.model.board[x][y] = self.model.round
                 self.model.board[prevx][prevy] = 0
                 self.model.stage = 0
@@ -90,9 +83,7 @@ class Application(Frame):
                 self.game_end_check()
             elif (x, y) == self.model.chess_selected:
                 # cancel the selection
-                self.chessButton[x][y] = Button(self, height=80, width=80, bg='#EBCEAC', image=icon,
-                                                        command=(lambda x, y: lambda: self.on_click(x, y))(x, y))
-                self.chessButton[x][y].grid(row=x + 1, column=y)
+                self.chessButton[x][y].config(image=icon)
                 self.model.stage = 0
                 self.highlight_button(True)
             else:
@@ -138,7 +129,7 @@ class Application(Frame):
                 self.model.time_white += 1
                 self.model.step_time += 1
                 time.sleep(1)
-                if self.model.step_time >= 600:
+                if self.model.step_time >= 60:
                     msg = messagebox.showwarning('Oops', 'White timeout. Black wins!')
                     print(msg)
                     self.initialize()
@@ -152,7 +143,7 @@ class Application(Frame):
                 self.model.time_black += 1
                 self.model.step_time += 1
                 time.sleep(1)
-                if self.model.step_time >= 600:
+                if self.model.step_time >= 60:
                     msg = messagebox.showwarning('Oops', 'Black timeout. White wins!')
                     print(msg)
                     self.initialize()
@@ -175,9 +166,7 @@ class Application(Frame):
                     icon_h = self.empty_icon
                 else:
                     icon_h = self.empty_highlighted_icon
-            self.chessButton[hx][hy] = Button(self, height=80, width=80, bg='#EBCEAC', image=icon_h,
-                                              command=(lambda x, y: lambda: self.on_click(x, y))(hx, hy))
-            self.chessButton[hx][hy].grid(row=hx + 1, column=hy)
+            self.chessButton[hx][hy].config(image=icon_h)
 
 # check if the game end and if need to skip a player's round
     def game_end_check(self):

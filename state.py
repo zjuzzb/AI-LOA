@@ -1,11 +1,24 @@
+import random
+
+
 class State:
     def __init__(self):
-        self.round = 1
+        self.round = -1
         self.board = []
         self.board.append([0, -1, -1, -1, -1, -1, -1, 0])
         for i in range(6):
             self.board.append([1, 0, 0, 0, 0, 0, 0, 1])
         self.board.append([0, -1, -1, -1, -1, -1, -1, 0])
+        self.next_loc = [
+            (1, 0),     # right
+            (1, 1),     # up-right
+            (0, 1),     # up
+            (-1, 1),    # up-left
+            (-1, 0),    # left
+            (-1, -1),   # down-left
+            (0, -1),    # down
+            (1, -1),    # down-right
+        ]
 
 # Create a deep clone of this game state.
     def clone(self):
@@ -28,8 +41,8 @@ class State:
         ((start_x, start_y), (end_x, end_y)) = move
         self.board[end_x][end_y] = self.board[start_x][start_y]
         self.board[start_x][start_y] = 0
-        if self.legal_move_check() == 1:
-            self.round = -self.round
+        # if self.legal_move_check() == 1:
+        #     self.round = -self.round
         pass
 
 # get locations of current player's chess, used as a start location of a move.
@@ -44,17 +57,8 @@ class State:
 # get LEGAL locations of a chess's potential moves, used as a end location of a move.
     def get_end_loc(self, x, y):
         result = []
-        next_loc = [
-            (1, 0),     # right
-            (1, 1),     # up-right
-            (0, 1),     # up
-            (-1, 1),    # up-left
-            (-1, 0),    # left
-            (-1, -1),   # down-left
-            (0, -1),    # down
-            (1, -1),    # down-right
-        ]
-        for (dx, dy) in next_loc:
+
+        for (dx, dy) in self.next_loc:
             step = -1
             (cx, cy) = (x, y)
             while self.in_bound(cx, cy):
@@ -81,14 +85,11 @@ class State:
 # check the win condition, return 1 for white win, -1 for black win, 0 for game continue
     def win_check(self):
         def recursion_flag(color, x, y):
-            if check_board[x][y] == 0:
-                check_board[x][y] = color
-                for (dx, dy) in next_loc:
-                    if self.in_bound(x + dx, y + dy):
-                        if self.board[x + dx][y + dy] == color:
-                            recursion_flag(color, x+dx, y+dy)
-            else:
-                return
+            check_board[x][y] = color
+            for (dx, dy) in self.next_loc:
+                if self.in_bound(x + dx, y + dy):
+                    if self.board[x + dx][y + dy] == color and check_board[x+dx][y+dy] == 0:
+                        recursion_flag(color, x+dx, y+dy)
 
         check_board = [[0 for _ in range(8)] for _ in range(8)]
         black_win = True
@@ -97,19 +98,13 @@ class State:
         white_flag = True
         black_count = 0
         white_count = 0
-        next_loc = [
-            (1, 0),     # right
-            (1, 1),     # up-right
-            (0, 1),     # up
-            (-1, 1),    # up-left
-            (-1, 0),    # left
-            (-1, -1),   # down-left
-            (0, -1),    # down
-            (1, -1),    # down-right
-        ]
 
         for i in range(8):
+            if not white_flag and not black_flag:
+                break
             for j in range(8):
+                if not white_flag and not black_flag:
+                    break
                 if self.board[i][j] == 1 and white_flag:
                     recursion_flag(1, i, j)
                     white_flag = False
@@ -176,10 +171,19 @@ class State:
             self.round = -self.round
             return 1
 
-    def get_result(self):
-        if self.legal_move_check() == 0:
-            return 0
-        return self.win_check()
+    # def get_result(self):
+    #     if self.legal_move_check() == 0:
+    #         return 0
+    #     return self.win_check()
 
+    def quick_move(self):
+        (start_x, start_y) = random.choice(self.get_start_loc())
+        end_loc = self.get_end_loc(start_x,start_y)
+        while not end_loc:
+            (start_x, start_y) = random.choice(self.get_start_loc())
+            end_loc = self.get_end_loc(start_x, start_y)
+        (end_x, end_y) = random.choice(end_loc)
+
+        return (start_x, start_y), (end_x, end_y)
 
 
