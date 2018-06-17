@@ -6,7 +6,7 @@ import random
 def thread_ai():
     while True:
         if m.round == -1:
-            ((start_x, start_y), (end_x, end_y)) = mcts(m, 400)
+            ((start_x, start_y), (end_x, end_y)) = mcts(m, 100)
             app.chessButton[start_x][start_y].invoke()
             time.sleep(1)
             app.chessButton[end_x][end_y].invoke()

@@ -22,7 +22,7 @@ def mcts(root_state, iter_max):
 
         # Roll out to the game end
         move_count = 0
-        while state.win_check() == 0 and move_count <= 200:
+        while state.win_check() == 0 and move_count <= 500:
             state.do_move(state.quick_move())
             move_count += 1
 
