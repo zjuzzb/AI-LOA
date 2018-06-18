@@ -186,11 +186,31 @@ class State:
 
         return (start_x, start_y), (end_x, end_y)
 
-    def evaluate_state(self,player):
+    def evaluate_state(self, player):
         count = 0
         for i in range(4):
             for j in range(4):
                 if self.board[i+2][j+2] == player:
+                    count -= 1
+                if self.board[i+2][j+2] == -player:
                     count += 1
-
-        return count
+        # player and opponent
+        connectedness_p = 0
+        chess_num_p = 0
+        connectedness_o = 0
+        chess_num_o = 0
+        for i in range(8):
+            for j in range(8):
+                if self.board[i][j] == -player:
+                    chess_num_o += 1
+                    for (dx, dy) in self.next_loc:
+                        if self.in_bound(i+dx, j+dy):
+                            if self.board[i+dx][j+dy] == -player:
+                                connectedness_o += 1
+                if self.board[i][j] == player:
+                    chess_num_p += 1
+                    for (dx, dy) in self.next_loc:
+                        if self.in_bound(i+dx, j+dy):
+                            if self.board[i+dx][j+dy] == player:
+                                connectedness_p += 1
+        return count/chess_num_o * 0.7 + (connectedness_o/chess_num_o - 2*connectedness_p/chess_num_p)/4 * 0.3

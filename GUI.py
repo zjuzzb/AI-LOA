@@ -93,6 +93,7 @@ class Application(Frame):
             else:
                 msg = messagebox.showwarning('Warning', 'Illegal move!')
                 print(msg)
+                print(x,y)
 
     def create_widgets(self):
         self.time_label_white = Label(self, textvariable=self.time_text_white)
@@ -204,7 +205,6 @@ class Application(Frame):
                 self.initialize()
 
     def initialize(self):
-        self.model.__init__()
         # initialize components
         self.chessButton = []
         self.time_text_black = StringVar(self, 'Black Total: 00:00   Step: 00')
@@ -212,4 +212,4 @@ class Application(Frame):
         self.round_text = StringVar(self, 'Current Player: Black')
         # load components
         self.create_widgets()
-
+        self.model.__init__()

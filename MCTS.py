@@ -4,7 +4,7 @@ import time
 import threading
 
 
-def mcts(root_state, iter_max, sec_max):
+def mcts(root_state, iter_max, sec_max, rollout_num):
     root_node = Node(state=root_state)
     args = [sec_max, 1]
 
@@ -36,22 +36,23 @@ def mcts(root_state, iter_max, sec_max):
         if node.untriedMoves:
             move = random.choice(node.untriedMoves)
             state.do_move(move)
+
+            # Only need one step to win, skip to move
+            if state.win_check() == root_node.round and node == root_node:
+                return move
+
             node = node.add_child(move, state)  # add child and descend tree and remove the move
 
         # Roll out to the game end
         move_count = 0
-        move = []
-        while state.win_check() == 0 and move_count <= 100:
+        while state.win_check() == 0 and move_count <= rollout_num:
             move = state.quick_move()
             state.do_move(move)
             move_count += 1
 
-        # Only need one step to win, skip to move
-        if move_count == 1:
-            return move
         # Back propagate from the expanded node and work back to the root node
-        if move_count > 100:
-            game_res = (state.evaluate_state(1) - state.evaluate_state(-1))/16
+        if move_count > rollout_num:
+            game_res = state.evaluate_state(-1)
         else:
             game_res = state.win_check() # black -1 white 1 draw 0
         while node:

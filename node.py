@@ -10,7 +10,7 @@ class Node:
         self.child = []
         self.wins = 0
         self.visits = 0
-        self.score = (state.evaluate_state(-self.round) - state.evaluate_state(self.round))/16
+        self.score = state.evaluate_state(self.round)
 
     def add_child(self, m, s):
         new_node = Node(state=s, move=m, parent=self)
@@ -19,7 +19,7 @@ class Node:
         return new_node
 
     def select_child(self):
-        self.child.sort(key=lambda c: c.wins/c.visits + sqrt(2*log(self.visits)/c.visits) + c.score)
+        self.child.sort(key=lambda c: c.wins/c.visits + sqrt(1.96*log(self.visits)/c.visits) + c.score)
         return self.child[-1]
 
     def update(self, result):
