@@ -12,10 +12,8 @@ class LOAModel(State):
         self.time_white = 0
         self.time_black = 0
         self.step_time = 0
-        # 0 for select a chess, 1 for jump to another location
-        self.stage = 0
         # stored the location of selected chess
-        self.chess_selected = (0, 0)
+        self.chess_selected = ()
         # for coloring
         self.legal_move = []
 
@@ -53,39 +51,45 @@ class Application(Frame):
         self.t_black.start()
 
     def on_click(self, x, y):
-        if self.model.stage == 0:
-            if self.model.board[x][y] == self.model.round:
-                if self.model.round == -1:
-                    icon = self.black_selected_icon
-                else:
-                    icon = self.white_selected_icon
-                self.chessButton[x][y].config(image=icon)
-                self.model.stage = 1
+        if self.model.board[x][y] == self.model.round:
+            if self.model.round == -1:
+                icon_s = self.black_selected_icon
+                icon = self.black_icon
+            else:
+                icon_s = self.white_selected_icon
+                icon = self.white_icon
+            if self.model.chess_selected == ():
+                self.chessButton[x][y].config(image=icon_s)
                 self.model.chess_selected = (x, y)
                 self.model.legal_move = self.model.get_end_loc(x, y)
                 self.highlight_button(False)
-        else:
+            else:
+                (prev_x, prev_y) = self.model.chess_selected
+                self.chessButton[prev_x][prev_y].config(image=icon)
+                self.model.legal_move = self.model.get_end_loc(prev_x, prev_y)
+                self.highlight_button(True)
+                self.chessButton[x][y].config(image=icon_s)
+                self.model.chess_selected = (x, y)
+                self.model.legal_move = self.model.get_end_loc(x, y)
+                self.highlight_button(False)
+        elif self.model.chess_selected != ():
             if self.model.round == -1:
                 icon = self.black_icon
             else:
                 icon = self.white_icon
             if (x, y) in self.model.legal_move:
                 # move the chess to a new location
-                (prevx, prevy) = self.model.chess_selected
-                self.chessButton[prevx][prevy].config(image=self.empty_icon)
+                (prev_x, prev_y) = self.model.chess_selected
+                self.chessButton[prev_x][prev_y].config(image=self.empty_icon)
                 self.chessButton[x][y].config(image=icon)
                 self.model.board[x][y] = self.model.round
-                self.model.board[prevx][prevy] = 0
-                self.model.stage = 0
+                self.model.board[prev_x][prev_y] = 0
                 self.highlight_button(True)
                 # clear step timing
                 self.model.step_time = 0
+                # clear selected chess
+                self.model.chess_selected = ()
                 self.game_end_check()
-            elif (x, y) == self.model.chess_selected:
-                # cancel the selection
-                self.chessButton[x][y].config(image=icon)
-                self.model.stage = 0
-                self.highlight_button(True)
             else:
                 msg = messagebox.showwarning('Warning', 'Illegal move!')
                 print(msg)

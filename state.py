@@ -42,7 +42,7 @@ class State:
         self.board[end_x][end_y] = self.board[start_x][start_y]
         self.board[start_x][start_y] = 0
         # if self.legal_move_check() == 1:
-        #     self.round = -self.round
+        self.round = -self.round
         pass
 
 # get locations of current player's chess, used as a start location of a move.
@@ -186,4 +186,11 @@ class State:
 
         return (start_x, start_y), (end_x, end_y)
 
+    def evaluate_state(self,player):
+        count = 0
+        for i in range(4):
+            for j in range(4):
+                if self.board[i+2][j+2] == player:
+                    count += 1
 
+        return count

@@ -6,7 +6,7 @@ import random
 def thread_ai():
     while True:
         if m.round == -1:
-            ((start_x, start_y), (end_x, end_y)) = mcts(m, 100)
+            ((start_x, start_y), (end_x, end_y)) = mcts(m, 500, 50)
             app.chessButton[start_x][start_y].invoke()
             time.sleep(1)
             app.chessButton[end_x][end_y].invoke()
@@ -30,5 +30,5 @@ t_ai.start()
 # add thread for random moves
 t_rnd = threading.Thread(target=thread_rnd, args=())
 t_rnd.setDaemon(True)
-t_rnd.start()
+# t_rnd.start()
 app.mainloop()
