@@ -51,7 +51,7 @@ class State:
         for i in range(8):
             for j in range(8):
                 if self.board[i][j] == self.round:
-                    result.append((i,j))
+                    result.append((i, j))
         return result
 
 # get LEGAL locations of a chess's potential moves, used as a end location of a move.
@@ -64,17 +64,19 @@ class State:
             while self.in_bound(cx, cy):
                 if self.board[cx][cy] != 0:
                     step += 1
-                cx += dx; cy += dy
+                cx += dx
+                cy += dy
             (cx, cy) = (x, y)
             while self.in_bound(cx, cy):
                 if self.board[cx][cy] != 0:
                     step += 1
-                cx -= dx; cy -= dy
+                cx -= dx
+                cy -= dy
             (next_x, next_y) = (x + step * dx, y + step * dy)
             if self.in_bound(next_x, next_y):
                 flag = True
                 for i in range(step):
-                    if self.board[x + i * dx][ y + i * dy] == -self.board[x][y]:
+                    if self.board[x + i * dx][y + i * dy] == -self.board[x][y]:
                         flag = False
                         break
                 if self.board[next_x][next_y] != self.board[x][y] and flag:
@@ -178,6 +180,20 @@ class State:
 
     def quick_move(self):
         (start_x, start_y) = random.choice(self.get_start_loc())
+        # if start_x <= 3:
+        #     if start_y <= 3:
+        #         # left-up block, move to right,down
+        #         direct = [self.next_loc[0],self.next_loc[6],self.next_loc[7]]
+        #     else:
+        #         # right-up move to left down
+        #         direct = [self.next_loc[4], self.next_loc[5], self.next_loc[6]]
+        # else:
+        #     if start_y <= 3:
+        #         # left-down block, move to right,up
+        #         direct = [self.next_loc[0],self.next_loc[1],self.next_loc[2]]
+        #     else:
+        #         # right-down move to left up
+        #         direct = [self.next_loc[2], self.next_loc[3], self.next_loc[4]]
         end_loc = self.get_end_loc(start_x,start_y)
         while not end_loc:
             (start_x, start_y) = random.choice(self.get_start_loc())

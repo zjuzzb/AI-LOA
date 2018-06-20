@@ -8,12 +8,12 @@ def mcts(root_state, iter_max, sec_max, rollout_num):
     root_node = Node(state=root_state)
     args = [sec_max, 1]
 
-    def thread_time(args):
+    def thread_time(arguments):
         while True:
             time.sleep(1)
-            args[0] -= 1
-            if args[0] == 0:
-                args[1] = 0
+            arguments[0] -= 1
+            if arguments[0] == 0:
+                arguments[1] = 0
                 break
 
     # add thread for timing
@@ -54,7 +54,7 @@ def mcts(root_state, iter_max, sec_max, rollout_num):
         if move_count > rollout_num:
             game_res = state.evaluate_state(-1)
         else:
-            game_res = state.win_check() # black -1 white 1 draw 0
+            game_res = state.win_check()   # black -1 white 1 draw 0
         while node:
             node.update((game_res * -node.round + 1) / 2)
             node = node.parent

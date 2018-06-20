@@ -26,14 +26,14 @@ class Application(Frame):
         Frame.__init__(self, master, height=500, width=500)
         self.pack()
         # load icons
-        self.empty_icon = PhotoImage(file='empty.png')
-        self.black_icon = PhotoImage(file='black_chess.png')
-        self.white_icon = PhotoImage(file='white_chess.png')
-        self.black_selected_icon = PhotoImage(file='black_chess_selected.png')
-        self.white_selected_icon = PhotoImage(file='white_chess_selected.png')
-        self.black_highlighted_icon = PhotoImage(file='black_chess_highlighted.png')
-        self.white_highlighted_icon = PhotoImage(file='white_chess_highlighted.png')
-        self.empty_highlighted_icon = PhotoImage(file='empty_highlighted.png')
+        self.empty_icon = PhotoImage(file='img/empty.png')
+        self.black_icon = PhotoImage(file='img/black_chess.png')
+        self.white_icon = PhotoImage(file='img/white_chess.png')
+        self.black_selected_icon = PhotoImage(file='img/black_chess_selected.png')
+        self.white_selected_icon = PhotoImage(file='img/white_chess_selected.png')
+        self.black_highlighted_icon = PhotoImage(file='img/black_chess_highlighted.png')
+        self.white_highlighted_icon = PhotoImage(file='img/white_chess_highlighted.png')
+        self.empty_highlighted_icon = PhotoImage(file='img/empty_highlighted.png')
         # initialize components
         self.chessButton = []
         self.time_text_black = StringVar(self, 'Black Total: 00:00   Step: 00')
@@ -93,14 +93,14 @@ class Application(Frame):
             else:
                 msg = messagebox.showwarning('Warning', 'Illegal move!')
                 print(msg)
-                print(x,y)
+                print(x, y)
 
     def create_widgets(self):
         self.time_label_white = Label(self, textvariable=self.time_text_white)
-        self.time_label_white.grid(row=0, column=0, columnspan=3)
         self.time_label_black = Label(self, textvariable=self.time_text_black)
-        self.time_label_black.grid(row=0, column=5, columnspan=3)
         self.round_label = Label(self, textvariable=self.round_text)
+        self.time_label_white.grid(row=0, column=0, columnspan=3)
+        self.time_label_black.grid(row=0, column=5, columnspan=3)
         self.round_label.grid(row=0, column=3, columnspan=2)
         for i in range(8):
             row = []
@@ -130,7 +130,8 @@ class Application(Frame):
             if self.model.round == 1:
                 minutes = int(self.model.time_white / 60)
                 seconds = int(self.model.time_white - minutes * 60.0)
-                self.time_text_white.set('White Total: %.2d:%.2d   Step: %.2d' % (minutes, seconds, self.model.step_time))
+                self.time_text_white.set('White Total: %.2d:%.2d   Step: %.2d'
+                                         % (minutes, seconds, self.model.step_time))
                 self.model.time_white += 1
                 self.model.step_time += 1
                 time.sleep(1)
@@ -144,7 +145,8 @@ class Application(Frame):
             if self.model.round == -1:
                 minutes = int(self.model.time_black / 60)
                 seconds = int(self.model.time_black - minutes * 60.0)
-                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d' % (minutes, seconds, self.model.step_time))
+                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d'
+                                         % (minutes, seconds, self.model.step_time))
                 self.model.time_black += 1
                 self.model.step_time += 1
                 time.sleep(1)
